@@ -46,7 +46,7 @@ def render_qr(url):
 
 def main():
     if len(sys.argv) < 2:
-        print('usage: pyqrcp <filename>')
+        print('usage: qrcp <filename>')
         exit(1)
 
     filename = sys.argv[1]
