@@ -1,17 +1,19 @@
-import http.server
 import socket
-import socketserver
 import sys
+from http.server import HTTPServer, SimpleHTTPRequestHandler
 from os import chdir, path
+from socketserver import ThreadingMixIn
 from shutil import copyfile
 from tempfile import TemporaryDirectory
 
 import pyqrcode
 
-handler = http.server.SimpleHTTPRequestHandler
-
 
 START_PORT = 8000
+
+
+class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
+    pass
 
 
 def get_local_ip():
@@ -34,7 +36,7 @@ def bind_server():
     port = START_PORT
     for i in range(0, 50):  # if you have all 50 of these ports in use, I don't know what to say
         try:
-            return socketserver.TCPServer(("", port+i), handler)
+            return ThreadedHTTPServer(("", port+i), SimpleHTTPRequestHandler)
         except OSError:
             pass
 
