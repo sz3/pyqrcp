@@ -16,6 +16,13 @@ class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
     pass
 
 
+class NoCacheHTTPRequestHandler(SimpleHTTPRequestHandler):
+    def send_response_only(self, code, message=None):
+        super().send_response_only(code, message)
+        self.send_header('Cache-Control', 'no-store, must-revalidate')
+        self.send_header('Expires', '0')
+
+
 def get_local_ip():
     '''
     returns routable ip if we have one.
@@ -36,7 +43,7 @@ def bind_server():
     port = START_PORT
     for i in range(0, 50):  # if you have all 50 of these ports in use, I don't know what to say
         try:
-            return ThreadedHTTPServer(("", port+i), SimpleHTTPRequestHandler)
+            return ThreadedHTTPServer(("", port+i), NoCacheHTTPRequestHandler)
         except OSError:
             pass
 
